@@ -29,8 +29,8 @@ type Block<[<Measure>] 'Measure, 'T> =
 type Benchmarks () =
 
     let rng = Random 123
-    let loopCount = 1_000_000
-    let arraySize = 100
+    let loopCount = 1
+    let arraySize = 1_000
     let randomLookups =
         [|
             for _ = 1 to loopCount * arraySize do
@@ -41,11 +41,25 @@ type Benchmarks () =
         randomLookups
         |> Array.map (fun x -> x * 1<Chicken>)
 
-    let lookupArray =
+    let lookupValues =
         [| for _ = 1 to arraySize do rng.Next (0, 100) |]
 
-    let block =
-        lookupArray
+    let arrayRandomLookupValues =
+        lookupValues
+        |> Array.copy
+
+    let blockRandomLookupValues =
+        lookupValues
+        |> Array.copy
+        |> Block<Chicken, _>
+
+    let arrayOrderedLookupValues =
+        lookupValues
+        |> Array.copy
+
+    let blockOrderedLookupValues =
+        lookupValues
+        |> Array.copy
         |> Block<Chicken, _>
 
 
@@ -56,7 +70,7 @@ type Benchmarks () =
 
         while i < randomLookups.Length - 1 do
             let nextLookup = randomLookups[i]
-            result <- lookupArray[nextLookup]
+            result <- arrayRandomLookupValues[nextLookup]
             i <- i + 1
 
         result
@@ -69,7 +83,7 @@ type Benchmarks () =
 
         while i < typedRandomLookups.Length - 1 do
             let nextLookup = typedRandomLookups[i]
-            result <- block[nextLookup]
+            result <- blockRandomLookupValues[nextLookup]
             i <- i + 1
 
         result
@@ -79,11 +93,11 @@ type Benchmarks () =
     member _.ArrayOrdered () =
         let mutable result = 0
 
-        for _ = 1 to loopCount do
-            let mutable i = 0
-            while i < lookupArray.Length - 1 do
-                result <- lookupArray[i]
-                i <- i + 1
+        // for _ = 1 to loopCount do
+        let mutable i = 0
+        while i < arrayOrderedLookupValues.Length - 1 do
+            result <- arrayOrderedLookupValues[i]
+            i <- i + 1
 
         result
 
@@ -92,11 +106,11 @@ type Benchmarks () =
     member _.BlockOrdered () =
         let mutable result = 0
 
-        for _ = 1 to loopCount do
-            let mutable i = 0<Chicken>
-            while i < block.Length - 1<Chicken> do
-                result <- block[i]
-                i <- i + 1<Chicken>
+        // for _ = 1 to loopCount do
+        let mutable i = 0<Chicken>
+        while i < blockOrderedLookupValues.Length - 1<Chicken> do
+            result <- blockOrderedLookupValues[i]
+            i <- i + 1<Chicken>
 
         result
 
