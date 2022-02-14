@@ -24,8 +24,8 @@ type Block<[<Measure>] 'Measure, 'T> =
 
     end
 
-[<HardwareCounters(HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)>]
-[<DisassemblyDiagnoser>]
+// [<HardwareCounters(HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)>]
+// [<DisassemblyDiagnoser>]
 // [<DisassemblyDiagnoser(printSource = true, exportHtml = true)>]
 type Benchmarks () =
 
@@ -64,55 +64,49 @@ type Benchmarks () =
         |> Block<Chicken, _>
 
 
+    // [<Benchmark>]
+    // member _.ArrayRandom () =
+    //     let mutable result = 0
+    //     let mutable i = 0
+
+    //     while i < randomLookups.Length - 1 do
+    //         let nextLookup = randomLookups[i]
+    //         result <- arrayRandomLookupValues[nextLookup]
+    //         i <- i + 1
+
+    //     result
+
+
+    // [<Benchmark>]
+    // member _.BlockRandom () =
+    //     let mutable result = 0
+    //     let mutable i = 0
+
+    //     while i < typedRandomLookups.Length - 1 do
+    //         let nextLookup = typedRandomLookups[i]
+    //         result <- blockRandomLookupValues[nextLookup]
+    //         i <- i + 1
+
+    //     result
+
+
     [<Benchmark>]
-    member _.ArrayRandom () =
+    member _.BlockOrdered () =
         let mutable result = 0
-        let mutable i = 0
-
-        while i < randomLookups.Length - 1 do
-            let nextLookup = randomLookups[i]
-            result <- arrayRandomLookupValues[nextLookup]
-            i <- i + 1
-
-        result
-
-
-    [<Benchmark>]
-    member _.BlockRandom () =
-        let mutable result = 0
-        let mutable i = 0
-
-        while i < typedRandomLookups.Length - 1 do
-            let nextLookup = typedRandomLookups[i]
-            result <- blockRandomLookupValues[nextLookup]
-            i <- i + 1
-
+        let mutable i = 0<Chicken>
+        while i < blockOrderedLookupValues.Length - 1<Chicken> do
+            result <- blockOrderedLookupValues[i]
+            i <- i + 1<Chicken>
         result
 
 
     [<Benchmark>]
     member _.ArrayOrdered () =
         let mutable result = 0
-
-        // for _ = 1 to loopCount do
         let mutable i = 0
         while i < arrayOrderedLookupValues.Length - 1 do
             result <- arrayOrderedLookupValues[i]
             i <- i + 1
-
-        result
-
-
-    [<Benchmark>]
-    member _.BlockOrdered () =
-        let mutable result = 0
-
-        // for _ = 1 to loopCount do
-        let mutable i = 0<Chicken>
-        while i < blockOrderedLookupValues.Length - 1<Chicken> do
-            result <- blockOrderedLookupValues[i]
-            i <- i + 1<Chicken>
-
         result
 
 
