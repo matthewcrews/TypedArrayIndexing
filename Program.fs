@@ -13,7 +13,7 @@ type Block<[<Measure>] 'Measure, 'T> =
     struct
         val Values: array<'T>
         new (v: array<'T>) = { Values = v }
-        member this.Item
+        member inline this.Item
             with get (i: int<'Measure>) =
                 this.Values[int i]
 
@@ -25,12 +25,13 @@ type Block<[<Measure>] 'Measure, 'T> =
     end
 
 [<HardwareCounters(HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)>]
-[<DisassemblyDiagnoser(printSource = true, exportHtml = true)>]
+[<DisassemblyDiagnoser>]
+// [<DisassemblyDiagnoser(printSource = true, exportHtml = true)>]
 type Benchmarks () =
 
     let rng = Random 123
     let loopCount = 1
-    let arraySize = 1_000
+    let arraySize = 100
     let randomLookups =
         [|
             for _ = 1 to loopCount * arraySize do
