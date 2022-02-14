@@ -9,7 +9,7 @@ type Chicken
 
 
 [<Struct>]
-type Kar<'T, [<Measure>] 'Measure> =
+type Block<[<Measure>] 'Measure, 'T> =
     struct
         val Values: array<'T>
         new (v: array<'T>) = { Values = v }
@@ -29,8 +29,8 @@ type Kar<'T, [<Measure>] 'Measure> =
 type Benchmarks () =
 
     let rng = Random 123
-    let loopCount = 10_000_000
-    let arraySize = 16
+    let loopCount = 1_000_000
+    let arraySize = 100
     let randomLookups =
         [|
             for _ = 1 to loopCount * arraySize do
@@ -44,9 +44,9 @@ type Benchmarks () =
     let lookupArray =
         [| for _ = 1 to arraySize do rng.Next (0, 100) |]
 
-    let structTypedLookupArray =
+    let block =
         lookupArray
-        |> Kar<_, Chicken>
+        |> Block<Chicken, _>
 
 
     [<Benchmark>]
@@ -63,27 +63,14 @@ type Benchmarks () =
 
 
     [<Benchmark>]
-    member _.KarRandom () =
+    member _.BlockRandom () =
         let mutable result = 0
         let mutable i = 0
 
         while i < typedRandomLookups.Length - 1 do
             let nextLookup = typedRandomLookups[i]
-            result <- structTypedLookupArray[nextLookup]
+            result <- block[nextLookup]
             i <- i + 1
-
-        result
-
-
-    [<Benchmark>]
-    member _.KarOrdered () =
-        let mutable result = 0
-
-        for _ = 1 to loopCount do
-            let mutable i = 0<Chicken>
-            while i < structTypedLookupArray.Length - 1<Chicken> do
-                result <- structTypedLookupArray[i]
-                i <- i + 1<Chicken>
 
         result
 
@@ -97,6 +84,19 @@ type Benchmarks () =
             while i < lookupArray.Length - 1 do
                 result <- lookupArray[i]
                 i <- i + 1
+
+        result
+
+
+    [<Benchmark>]
+    member _.BlockOrdered () =
+        let mutable result = 0
+
+        for _ = 1 to loopCount do
+            let mutable i = 0<Chicken>
+            while i < block.Length - 1<Chicken> do
+                result <- block[i]
+                i <- i + 1<Chicken>
 
         result
 
