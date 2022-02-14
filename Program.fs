@@ -24,9 +24,8 @@ type Block<[<Measure>] 'Measure, 'T> =
 
     end
 
-// [<HardwareCounters(HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)>]
-// [<DisassemblyDiagnoser>]
-// [<DisassemblyDiagnoser(printSource = true, exportHtml = true)>]
+[<HardwareCounters(HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)>]
+[<DisassemblyDiagnoser(printSource = true, exportHtml = true)>]
 type Benchmarks () =
 
     let rng = Random 123
