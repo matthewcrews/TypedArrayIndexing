@@ -24,13 +24,14 @@ type Block<[<Measure>] 'Measure, 'T> =
 
     end
 
+
 [<HardwareCounters(HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)>]
 [<DisassemblyDiagnoser(printSource = true, exportHtml = true)>]
 type Benchmarks () =
 
     let rng = Random 123
     let loopCount = 1
-    let arraySize = 100
+    let arraySize = 1_000
     let randomLookups =
         [|
             for _ = 1 to loopCount * arraySize do
@@ -62,6 +63,21 @@ type Benchmarks () =
         |> Array.copy
         |> Block<Chicken, _>
 
+    let arrayOrderedFast (a: array<int>) =
+        let mutable result = 0
+        let mutable i = 0
+        while i < a.Length - 1 do
+            result <- a[i]
+            i <- i + 1
+        result
+
+    let blockOrderedFast (a: Block<Chicken, int>) =
+        let mutable result = 0
+        let mutable i = 0<Chicken>
+        while i < a.Length - 1<Chicken> do
+            result <- a[i]
+            i <- i + 1<Chicken>
+        result
 
     // [<Benchmark>]
     // member _.ArrayRandom () =
@@ -90,7 +106,17 @@ type Benchmarks () =
 
 
     [<Benchmark>]
-    member _.BlockOrdered () =
+    member _.ArrayOrderedSlow () =
+        let mutable result = 0
+        let mutable i = 0
+        while i < arrayOrderedLookupValues.Length - 1 do
+            result <- arrayOrderedLookupValues[i]
+            i <- i + 1
+        result
+
+
+    [<Benchmark>]
+    member _.BlockOrderedSlow () =
         let mutable result = 0
         let mutable i = 0<Chicken>
         while i < blockOrderedLookupValues.Length - 1<Chicken> do
@@ -100,13 +126,13 @@ type Benchmarks () =
 
 
     [<Benchmark>]
-    member _.ArrayOrdered () =
-        let mutable result = 0
-        let mutable i = 0
-        while i < arrayOrderedLookupValues.Length - 1 do
-            result <- arrayOrderedLookupValues[i]
-            i <- i + 1
-        result
+    member _.ArrayOrderedFast () =
+        arrayOrderedFast arrayOrderedLookupValues
+
+
+    [<Benchmark>]
+    member _.BlockOrderedFast () =
+        blockOrderedFast blockOrderedLookupValues
 
 
 [<EntryPoint>]
